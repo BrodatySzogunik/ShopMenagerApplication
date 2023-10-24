@@ -1,7 +1,8 @@
-import frames.Main;
+import frames.MainApplication;
+import frames.NavigationPanel;
 
 public class main {
     public static void main(String[] args) {
-        new Main();
+        new MainApplication();
     }
 }
