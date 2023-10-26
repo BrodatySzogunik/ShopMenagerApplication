@@ -10,7 +10,7 @@ public class NavigationPanel extends JFrame {
     private JLabel address;
     public JButton productSearch;
     public JButton getDelivery;
-    private JButton button3;
+    public JButton searchCompany;
 
     public static NavigationPanel instance;
     private NavigationPanel(){

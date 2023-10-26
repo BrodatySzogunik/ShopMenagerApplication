@@ -13,7 +13,7 @@ public class ProductList {
 
     private ProductList(){
 
-        table1.setModel();
+//        table1.setModel();
 
 
         tableModel = new TableModel() {
@@ -61,7 +61,7 @@ public class ProductList {
             public void removeTableModelListener(TableModelListener l) {
 
             }
-        }
+        };
     };
 
     public static ProductList getInstance(){
@@ -75,8 +75,8 @@ public class ProductList {
 }
 
 
-class myModel extends AbstractTableModel{
-
-}
+//class myModel extends AbstractTableModel{
+//
+//}
 
 

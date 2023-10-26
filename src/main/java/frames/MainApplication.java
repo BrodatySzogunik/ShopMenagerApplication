@@ -11,10 +11,12 @@ public class MainApplication extends JFrame{
 
     private ProductList productList;
     private GetDelivery getDelivery;
+    private SearchCompany searchCompany;
     public MainApplication(){
 
         this.productList = ProductList.getInstance();
         this.getDelivery = GetDelivery.getInstance();
+        this.searchCompany = SearchCompany.getInstance();
         this.navigationpanelClass = NavigationPanel.getInstance();
 
         //card layout
@@ -25,6 +27,7 @@ public class MainApplication extends JFrame{
         contentPanel.setLayout(cardLayout);
         contentPanel.add(productList.panel1, "productSearch");
         contentPanel.add(getDelivery.panel1, "getDelivery");
+        contentPanel.add(searchCompany.panel1, "searchCompany");
         getContentPane().add(this.contentPanel, BorderLayout.CENTER);
 
         //panel steering
@@ -36,6 +39,11 @@ public class MainApplication extends JFrame{
         this.navigationpanelClass.getDelivery.addActionListener(e->{
             System.out.println("show single product");
             cardLayout.show(contentPanel,"getDelivery");
+        });
+
+        this.navigationpanelClass.searchCompany.addActionListener(e->{
+            System.out.println("show single product");
+            cardLayout.show(contentPanel,"searchCompany");
         });
 
         //navigation panel
