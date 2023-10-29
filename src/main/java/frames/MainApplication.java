@@ -1,5 +1,7 @@
 package frames;
 
+import services.ConfigService;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,13 +13,25 @@ public class MainApplication extends JFrame{
 
     private ProductList productList;
     private GetDelivery getDelivery;
-    private SearchCompany searchCompany;
+    private GenerateBill generateBill;
+
+    private ConfigService configService;
+
+
     public MainApplication(){
 
         this.productList = ProductList.getInstance();
         this.getDelivery = GetDelivery.getInstance();
-        this.searchCompany = SearchCompany.getInstance();
+        this.generateBill = GenerateBill.getInstance();
         this.navigationpanelClass = NavigationPanel.getInstance();
+        this.configService = ConfigService.getInstance();
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                configService.saveConfig();
+            }
+        });
 
         //card layout
         CardLayout cardLayout = new CardLayout();
@@ -27,7 +41,7 @@ public class MainApplication extends JFrame{
         contentPanel.setLayout(cardLayout);
         contentPanel.add(productList.panel1, "productSearch");
         contentPanel.add(getDelivery.panel1, "getDelivery");
-        contentPanel.add(searchCompany.panel1, "searchCompany");
+        contentPanel.add(generateBill.panel1, "generateBill");
         getContentPane().add(this.contentPanel, BorderLayout.CENTER);
 
         //panel steering
@@ -43,7 +57,7 @@ public class MainApplication extends JFrame{
 
         this.navigationpanelClass.searchCompany.addActionListener(e->{
             System.out.println("show single product");
-            cardLayout.show(contentPanel,"searchCompany");
+            cardLayout.show(contentPanel,"generateBill");
         });
 
         //navigation panel
@@ -51,19 +65,9 @@ public class MainApplication extends JFrame{
         getContentPane().add(this.navigationPanel, BorderLayout.NORTH);
 
 
-
-
-
-
-
-
-
-
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setSize(500,500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-
-
 
     }
 }
