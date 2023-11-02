@@ -21,7 +21,7 @@ public class ConfigService {
 
     public void readConfig(){
         Properties properties = new Properties();
-        String configFile = "D:/inżynierka/template/config";
+        String configFile = "C:/MyFiles/ShopMenagerApplication/template/config";
 
         try {
             // Attempt to load the existing configuration file
@@ -41,7 +41,7 @@ public class ConfigService {
 
     public void saveConfig(){
         Properties properties = new Properties();
-        String configFile = "D:/inżynierka/template/config";
+        String configFile = "C:/MyFiles/ShopMenagerApplication/template/config";
 
         properties.setProperty("companyNip", this.companyNip);
         properties.setProperty("lastInvoiceNumber", Integer.toString(this.lastInvoiceNumber));

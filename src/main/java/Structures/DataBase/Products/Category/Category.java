@@ -16,6 +16,9 @@ public class Category {
             insertable = false,
             updatable = false
     )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE
+    )
     private Long id;
 
     private String categoryName;

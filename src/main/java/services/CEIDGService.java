@@ -1,19 +1,14 @@
 package services;
 
-import Structures.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import Structures.CEIDG.Root;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Builder;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 
 public class CEIDGService {
     private static CEIDGService instance;

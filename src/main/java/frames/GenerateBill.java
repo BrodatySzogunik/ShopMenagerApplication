@@ -1,10 +1,8 @@
 package frames;
 
-import Structures.Company;
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import Structures.CEIDG.Company;
 import services.CEIDGService;
+import services.CartService;
 import services.ConfigService;
 import services.PdfService;
 
@@ -82,7 +80,7 @@ public class GenerateBill {
             String saleDate = this.dateField.getText();
             String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
             String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
-            this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo, null, "0",paymentMethod,paymentDeadline,saleDate);
+            this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo, CartService.getInstance().getProductList(), "0",paymentMethod,paymentDeadline,saleDate);
         });
 
 

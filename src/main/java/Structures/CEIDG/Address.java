@@ -1,4 +1,4 @@
-package Structures;
+package Structures.CEIDG;
 
 public class Address {
     private String street;

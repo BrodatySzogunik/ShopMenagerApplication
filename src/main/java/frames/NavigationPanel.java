@@ -1,6 +1,6 @@
 package frames;
 
-import Structures.Company;
+import Structures.CEIDG.Company;
 import services.CEIDGService;
 import services.ConfigService;
 

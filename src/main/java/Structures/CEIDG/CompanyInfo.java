@@ -1,4 +1,4 @@
-package Structures;
+package Structures.CEIDG;
 
 public class CompanyInfo {
     private String companyName;

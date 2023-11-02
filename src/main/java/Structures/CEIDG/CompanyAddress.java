@@ -1,4 +1,4 @@
-package Structures;
+package Structures.CEIDG;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

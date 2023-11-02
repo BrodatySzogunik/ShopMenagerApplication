@@ -1,6 +1,8 @@
 package services;
 
-import Structures.Company;
+import Structures.CEIDG.Company;
+import Structures.Cart.CartItem;
+import Structures.DataBase.Products.Product.Product;
 import com.aspose.words.DocumentBuilder;
 import org.apache.commons.text.StringSubstitutor;
 import java.io.BufferedReader;
@@ -35,9 +37,9 @@ public class PdfService {
     }
 
 
-    public void generateVatPdf(Company sellerCompany, Company buyerCompany, List<String> productList, String productsValue, String paymentMethod, String paymentDeadline , String saleDate){
+    public void generateVatPdf(Company sellerCompany, Company buyerCompany, List<CartItem> productList, String productsValue, String paymentMethod, String paymentDeadline , String saleDate){
         try {
-            String htmlTemplate = this.readHTMLFileToString("D:\\inżynierka\\template\\template.html");
+            String htmlTemplate = this.readHTMLFileToString("C:/MyFiles/ShopMenagerApplication/template/template.html");
 
             this.configService.increaseInvoiceNumber();
             Date date = new Date();
@@ -47,40 +49,53 @@ public class PdfService {
             String invoiceNumber = "R/"+ this.configService.getLastInvoiceNumber() +"/"+year.format(date);
             String createFileName = "R_"+ this.configService.getLastInvoiceNumber() +"_"+year.format(date);
 
-            Map<String, String> values = new HashMap<>();
-            values.put("sellerCompanyName", sellerCompany.getName());
-            values.put("sellerAddress", sellerCompany.getCompanyAddress().getFirstAddressLane());
-            values.put("sellerPostCodeCity", sellerCompany.getCompanyAddress().getSecondAddressLane());
-            values.put("sellerNip", sellerCompany.getOwner().getNip());
-            values.put("invoicePlace",sellerCompany.getCompanyAddress().city);
+            Map<String, String> pdfValues = new HashMap<>();
+            pdfValues.put("sellerCompanyName", sellerCompany.getName());
+            pdfValues.put("sellerAddress", sellerCompany.getCompanyAddress().getFirstAddressLane());
+            pdfValues.put("sellerPostCodeCity", sellerCompany.getCompanyAddress().getSecondAddressLane());
+            pdfValues.put("sellerNip", sellerCompany.getOwner().getNip());
+            pdfValues.put("invoicePlace",sellerCompany.getCompanyAddress().city);
 
-            values.put("buyerCompanyName", buyerCompany.getName());
-            values.put("buyerAddress", buyerCompany.getCompanyAddress().getFirstAddressLane());
-            values.put("buyerPostCodeCity", buyerCompany.getCompanyAddress().getSecondAddressLane());
-            values.put("buyerNip", buyerCompany.getOwner().getNip());
-            values.put("invoiceNumber",invoiceNumber);
-            values.put("invoiceDate",fullDate.format(date));
-            values.put("saleDate",saleDate);
-            values.put("paymentMethod",paymentMethod);
-            values.put("paymentDeadline",paymentDeadline);
-            values.put("bankAccountNumber",this.configService.getBankAccountNumber());
+            pdfValues.put("buyerCompanyName", buyerCompany.getName());
+            pdfValues.put("buyerAddress", buyerCompany.getCompanyAddress().getFirstAddressLane());
+            pdfValues.put("buyerPostCodeCity", buyerCompany.getCompanyAddress().getSecondAddressLane());
+            pdfValues.put("buyerNip", buyerCompany.getOwner().getNip());
+            pdfValues.put("invoiceNumber",invoiceNumber);
+            pdfValues.put("invoiceDate",fullDate.format(date));
+            pdfValues.put("saleDate",saleDate);
+            pdfValues.put("paymentMethod",paymentMethod);
+            pdfValues.put("paymentDeadline",paymentDeadline);
+            pdfValues.put("bankAccountNumber",this.configService.getBankAccountNumber());
+
+            pdfValues.put("productsValue", productsValue);
+
+            String productTemplate = "<tr>\n" +
+                    "            <th>${productName}</th>\n" +
+                    "            <th>${productAmount}</th>\n" +
+                    "            <th>${productPrice}</th>\n" +
+                    "            <th>${productSummaryPrice}(PLN)</th>\n" +
+                    "        </tr>";
+
+            StringBuilder productListHtml= new StringBuilder();
+            for(CartItem p : productList){
+                Map<String, String> productValues = new HashMap<>();
+                productValues.put("productName",p.getProduct().getName());
+                productValues.put("productAmount",p.getAmount().toString());
+                productValues.put("productPrice",String.valueOf(p.getProduct().getSellPrice()));
+                productValues.put("productSummaryPrice",String.valueOf(p.getAmount()*p.getProduct().getSellPrice()));
+                StringSubstitutor productSubstitutor = new StringSubstitutor(productValues);
+                productListHtml.append(productSubstitutor.replace(productTemplate));
+            }
+            pdfValues.put("products",productListHtml.toString());
 
 
-            values.put("products","<tr>\n" +
-                    "            <th>Nazwa Produktu</th>\n" +
-                    "            <th>1</th>\n" +
-                    "            <th>1</th>\n" +
-                    "            <th>1 (PLN)</th>\n" +
-                    "        </tr>");
-            values.put("productsValue", productsValue);
-
-            StringSubstitutor sub = new StringSubstitutor(values);
-            String result = sub.replace(htmlTemplate);
+            StringSubstitutor pdfSubstitutor = new StringSubstitutor(pdfValues);
+            String result = pdfSubstitutor.replace(htmlTemplate);
 
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("D:/inżynierka/template/"+createFileName+".pdf");
+            this.builder.getDocument().save("C:/MyFiles/ShopMenagerApplication/template/"+createFileName+".pdf");
 
 
         } catch (Exception exception) {
