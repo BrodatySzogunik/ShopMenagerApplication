@@ -79,7 +79,7 @@ public class DBController {
         return null;
     }
 
-    public List<Product> searchProduct(String  searchTerm){
+    public List<Product> searchProduct(String  searchTerm, Long categoryId){
 
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -90,12 +90,13 @@ public class DBController {
 
         // Create a join with OemToProduct
         Join<Product, OemToProduct> oemJoin = productRoot.join("matchingOemCodes");
-
+        System.out.println(categoryId);
         query.where(
                 cb.or(
-                        cb.equal(productRoot.get("id"), Long.parseLong(searchTerm)),
+                        cb.equal(cb.lower(productRoot.get("id")), searchTerm.toLowerCase()),
                         cb.like(cb.lower(productRoot.get("name")), "%" + searchTerm.toLowerCase() + "%"),
-                        cb.like(cb.lower(oemJoin.get("oem")), "%" + searchTerm.toLowerCase() + "%")
+                        cb.like(cb.lower(oemJoin.get("oem")), "%" + searchTerm.toLowerCase() + "%"),
+                        cb.equal(productRoot.get("categoryId").get("id"), categoryId)
                 )
         );
 
@@ -104,24 +105,24 @@ public class DBController {
     }
 
 
-    public static void main(String[] args) {
-        Category category = new Category();
-        category.setCategoryName("PŁYN HAMULCOWY");
-        DBController dbController = new DBController();
-
-//        dbController.insertIntoTable(category);
-
-        Product product = new Product();
-
-        product.setName("chłodnica honda accord");
-        dbController.insertIntoTable(product);
-
-        System.out.println(dbController.getEntities(Product.class));
-
-        for (Product employee : dbController.getEntities(Product.class)) {
-            System.out.println("ID: " + employee.getId() + ", Name: " + employee.getName());
-        }
-
-
-    }
+//    public static void main(String[] args) {
+//        Category category = new Category();
+//        category.setCategoryName("PŁYN HAMULCOWY");
+//        DBController dbController = new DBController();
+//
+////        dbController.insertIntoTable(category);
+//
+//        Product product = new Product();
+//
+//        product.setName("chłodnica honda accord");
+//        dbController.insertIntoTable(product);
+//
+//        System.out.println(dbController.getEntities(Product.class));
+//
+//        for (Product employee : dbController.getEntities(Product.class)) {
+//            System.out.println("ID: " + employee.getId() + ", Name: " + employee.getName());
+//        }
+//
+//
+//    }
 }

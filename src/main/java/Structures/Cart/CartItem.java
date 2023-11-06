@@ -22,12 +22,10 @@ public class CartItem {
     }
 
     public void increaseAmount(){
-        this.amount++;
+        if(this.getAmount()+ 1 <= this.getProduct().getQuantity()) this.amount++;
     }
 
     public void decreaseAmount(){
-        if(this.amount > 0){
-            this.amount--;
-        }
+        if(this.amount > 0) this.amount--;
     }
 }

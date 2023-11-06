@@ -14,13 +14,13 @@ public class Product {
     @Column(
             name = "product_id",
             nullable = false,
-            insertable = false,
+//            insertable = false,
             updatable = false
     )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE
-    )
-    private Long id;
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE
+//    )
+    private String id;
 
     private int quantity;
 
@@ -47,11 +47,11 @@ public class Product {
     public Product() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -93,5 +93,13 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Category getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Category categoryId) {
+        this.categoryId = categoryId;
     }
 }

@@ -16,6 +16,7 @@ public class MainApplication extends JFrame{
     private GenerateBill generateBill;
 
     private ConfigService configService;
+    private Cart cart;
 
 
     public MainApplication(){
@@ -25,6 +26,7 @@ public class MainApplication extends JFrame{
         this.generateBill = GenerateBill.getInstance();
         this.navigationpanelClass = NavigationPanel.getInstance();
         this.configService = ConfigService.getInstance();
+        this.cart = Cart.getInstance();
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -42,6 +44,7 @@ public class MainApplication extends JFrame{
         contentPanel.add(productList.panel1, "productSearch");
         contentPanel.add(getDelivery.panel1, "getDelivery");
         contentPanel.add(generateBill.panel1, "generateBill");
+        contentPanel.add(cart.panel1, "cart");
         getContentPane().add(this.contentPanel, BorderLayout.CENTER);
 
         //panel steering
@@ -55,9 +58,15 @@ public class MainApplication extends JFrame{
             cardLayout.show(contentPanel,"getDelivery");
         });
 
-        this.navigationpanelClass.searchCompany.addActionListener(e->{
-            System.out.println("show single product");
+        this.cart.generateBillButton.addActionListener(e->{
+            System.out.println("showBillGeneration");
             cardLayout.show(contentPanel,"generateBill");
+        });
+
+        this.navigationpanelClass.cartButton.addActionListener(e->{
+            System.out.println("show cart");
+            cart.updateCartTable();
+            cardLayout.show(contentPanel,"cart");
         });
 
         //navigation panel

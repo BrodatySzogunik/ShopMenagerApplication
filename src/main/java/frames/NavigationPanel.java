@@ -17,6 +17,7 @@ public class NavigationPanel extends JFrame {
     public JButton productSearch;
     public JButton getDelivery;
     public JButton searchCompany;
+    public JButton cartButton;
 
     private ConfigService configService;
     private CEIDGService ceidgService;
@@ -28,16 +29,8 @@ public class NavigationPanel extends JFrame {
 
         this.configService = ConfigService.getInstance();
         this.ceidgService = CEIDGService.getInstance();
+        this.getInitialCompanyData();
 
-        try {
-            Company company = this.ceidgService.getCompanyDataByNip(this.configService.getCompanyNip()).companies.get(0);
-            this.companyNameLabel.setText(company.getName());
-            this.addressFirstLineLabel.setText(company.getCompanyAddress().getFirstAddressLane());
-            this.addressSecondLineLabel.setText(company.getCompanyAddress().getSecondAddressLane());
-            this.nipLabel.setText("NIP: "+company.getOwner().getNip());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static NavigationPanel getInstance() {
@@ -45,5 +38,18 @@ public class NavigationPanel extends JFrame {
             instance = new NavigationPanel();
         }
         return instance;
+    }
+
+    public void getInitialCompanyData(){
+    try {
+        Company company = this.ceidgService.getCompanyDataByNip(this.configService.getCompanyNip()).companies.get(0);
+        this.companyNameLabel.setText(company.getName());
+        this.addressFirstLineLabel.setText(company.getCompanyAddress().getFirstAddressLane());
+        this.addressSecondLineLabel.setText(company.getCompanyAddress().getSecondAddressLane());
+        this.nipLabel.setText("NIP: "+company.getOwner().getNip());
+    } catch (IOException e) {
+            e.printStackTrace();
+    }
+
     }
 }

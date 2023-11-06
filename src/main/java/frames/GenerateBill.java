@@ -32,12 +32,14 @@ public class GenerateBill {
 
     private Company sellerCompanyInfo;
     private Company buyerCompanyInfo;
+    private CartService cartService;
 
     private GenerateBill(){
 
         this.ceidgService = CEIDGService.getInstance();
         this.pdfService = PdfService.getInstance();
         this.configService = ConfigService.getInstance();
+        this.cartService = CartService.getInstance();
 
         this.panel1.setPreferredSize(new Dimension(200,200));
 
@@ -80,7 +82,8 @@ public class GenerateBill {
             String saleDate = this.dateField.getText();
             String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
             String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
-            this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo, CartService.getInstance().getProductList(), "0",paymentMethod,paymentDeadline,saleDate);
+            String productsValue = String.valueOf(this.cartService.getProductValue());
+            this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo,this.cartService.getProductList() ,productsValue ,paymentMethod,paymentDeadline,saleDate);
         });
 
 

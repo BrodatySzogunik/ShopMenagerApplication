@@ -13,12 +13,12 @@ public class Category {
     @Column(
             name = "category_id",
             nullable = false,
-            insertable = false,
+//            insertable = false,
             updatable = false
     )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE
-    )
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE
+//    )
     private Long id;
 
     private String categoryName;
