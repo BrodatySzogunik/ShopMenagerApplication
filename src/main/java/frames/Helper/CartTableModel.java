@@ -52,11 +52,13 @@ public class CartTableModel extends AbstractTableModel {
             case 4: final JButton button1 = new JButton(COLUMN_NAMES[columnIndex]);
                 button1.addActionListener(e ->{
                     CartService.getInstance().increaseProductAmount(rowIndex);
+                    this.fireTableDataChanged();
                 });
                 return button1;
             case 5: final JButton button2 = new JButton(COLUMN_NAMES[columnIndex]);
                 button2.addActionListener(e ->{
                     CartService.getInstance().decreaseProductAmount(rowIndex);
+                    this.fireTableDataChanged();
                 });
                 return button2;
             default: return "Error";

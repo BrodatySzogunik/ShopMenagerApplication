@@ -114,18 +114,11 @@ public class ProductList {
         oemToProduct.setOem("HONDA 19010P0DJ53");
         dbController.insertIntoTable(oemToProduct);
 
-//        product = new Product();
-//        product.setName("Olej 5w-40");
-//        product.setBuyPrice(100);
-//        product.setSellPrice(150);
-//        product.setQuantity(20);
-//        dbController.insertIntoTable(product);
+        Category categoryFilter = new Category();
+        categoryFilter.setCategoryName("FILTR POWIETRZA");
+        categoryFilter.setId(2L);
 
-//        Category categoryFilter = new Category();
-//        category.setCategoryName("FILTR POWIETRZA");
-//        category.setId(2L);
-
-//        dbController.insertIntoTable(category);
+        dbController.insertIntoTable(categoryFilter);
 
         product = new Product();
         product.setName("Mann-Filter C 35 154 Filtr powietrza");
@@ -133,7 +126,7 @@ public class ProductList {
         product.setSellPrice(45);
         product.setQuantity(10);
         product.setId("C 35 154");
-//        product.setCategoryId(categoryFilter);
+        product.setCategoryId(categoryFilter);
         dbController.insertIntoTable(product);
 
         oemToProduct = new OemToProduct();
@@ -160,7 +153,7 @@ public class ProductList {
         product.setSellPrice(32);
         product.setQuantity(10);
         product.setId("AP 130/9");
-//        product.setCategoryId(categoryFilter);
+        product.setCategoryId(categoryFilter);
         dbController.insertIntoTable(product);
 
         oemToProduct = new OemToProduct();
@@ -186,7 +179,7 @@ public class ProductList {
         product.setSellPrice(35);
         product.setQuantity(10);
         product.setId("1 457 432 200");
-//        product.setCategoryId(categoryFilter);
+        product.setCategoryId(categoryFilter);
         dbController.insertIntoTable(product);
 
         oemToProduct = new OemToProduct();

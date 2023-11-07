@@ -8,7 +8,10 @@ import services.CartService;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Vector;
+import java.util.stream.Stream;
 
 public class Cart {
 
@@ -17,10 +20,16 @@ public class Cart {
     public JPanel panel1;
     public JButton generateBillButton;
     private JLabel cartSumLabel;
+
+    private PropertyChangeSupport propertyChangeSupport;
+
+    Stream<Double> cartValueStream ;
     private final CartService cartService;
 
     private Cart(){
         this.cartService = CartService.getInstance();
+        this.cartValueStream = Stream.generate(() -> this.cartService.getProductValue());
+//        this.
         this.generateCartTable();
     }
 
@@ -29,6 +38,13 @@ public class Cart {
             instance = new Cart();
         }
         return instance;
+    }
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    private void updateSumOfItems(){
+        this.cartSumLabel.setText();
     }
 
     private void generateCartTable(){

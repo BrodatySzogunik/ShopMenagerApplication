@@ -90,15 +90,19 @@ public class DBController {
 
         // Create a join with OemToProduct
         Join<Product, OemToProduct> oemJoin = productRoot.join("matchingOemCodes");
-        System.out.println(categoryId);
-        query.where(
-                cb.or(
-                        cb.equal(cb.lower(productRoot.get("id")), searchTerm.toLowerCase()),
-                        cb.like(cb.lower(productRoot.get("name")), "%" + searchTerm.toLowerCase() + "%"),
-                        cb.like(cb.lower(oemJoin.get("oem")), "%" + searchTerm.toLowerCase() + "%"),
-                        cb.equal(productRoot.get("categoryId").get("id"), categoryId)
-                )
+
+        Predicate searchPredicate = cb.or(
+                cb.equal(cb.lower(productRoot.get("id")), searchTerm.toLowerCase()),
+                cb.like(cb.lower(productRoot.get("name")), "%" + searchTerm.toLowerCase() + "%"),
+                cb.like(cb.lower(oemJoin.get("oem")), "%" + searchTerm.toLowerCase() + "%")
         );
+
+        if (categoryId != null) {
+            Predicate categoryPredicate = cb.equal(productRoot.get("categoryId").get("id"), categoryId);
+            query.where(cb.and(searchPredicate, categoryPredicate));
+        } else {
+            query.where(searchPredicate);
+        }
 
         List<Product> products = entityManager.createQuery(query).getResultList();
         return products;

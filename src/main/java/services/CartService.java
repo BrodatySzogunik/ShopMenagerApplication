@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class CartService {
     private static CartService instance;
     private List<CartItem>  productList;
+
+
 
     private CartService(){
         this.productList = new ArrayList<>();

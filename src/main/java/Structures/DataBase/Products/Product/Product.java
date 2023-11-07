@@ -34,7 +34,6 @@ public class Product {
     @ManyToOne()
     @JoinColumn(
             name="category_id",
-            insertable=false,
             updatable=false)
     private Category categoryId;
 
