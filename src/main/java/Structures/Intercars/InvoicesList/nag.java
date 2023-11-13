@@ -1,4 +1,4 @@
-package Structures.Intercars;
+package Structures.Intercars.InvoicesList;
 
 public class nag {
     public int id;
