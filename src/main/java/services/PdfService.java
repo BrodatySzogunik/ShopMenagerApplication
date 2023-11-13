@@ -3,7 +3,12 @@ package services;
 import Structures.CEIDG.Company;
 import Structures.Cart.CartItem;
 import Structures.DataBase.Products.Product.Product;
+import Structures.DataBase.Sales.BillToProductToPrice.BillToProductToPrice;
+import Structures.PdfHelpers.SaleReportTableItem;
+import Utils.Utils;
 import com.aspose.words.DocumentBuilder;
+import com.aspose.words.PageSet;
+import com.aspose.words.PageSetup;
 import org.apache.commons.text.StringSubstitutor;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,16 +22,13 @@ import java.util.Map;
 public class PdfService {
     private static PdfService instance;
     private DocumentBuilder builder;
+    private PageSetup pageSetup;
     private ConfigService configService;
 
     private PdfService(){
 
         this.configService = ConfigService.getInstance();
-        try {
-            builder = new DocumentBuilder();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     public static PdfService getInstance(){
@@ -36,13 +38,116 @@ public class PdfService {
         return instance;
     }
 
-
-    public void generateVatPdf(Company sellerCompany, Company buyerCompany, List<CartItem> productList, String productsValue, String paymentMethod, String paymentDeadline , String saleDate){
+    private void createDocumentBuilder(){
         try {
-            String htmlTemplate = this.readHTMLFileToString("C:/MyFiles/ShopMenagerApplication/template/template.html");
+            builder = new DocumentBuilder();
+            pageSetup = builder.getPageSetup();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateSaleReport(Company sellerCompany,Date dateFrom, Date dateTo, List<SaleReportTableItem> tableItems){
+
+        try{
+            createDocumentBuilder();
+            pageSetup.setMargins(1);
+            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/SaleReport.html");
+
+            SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
+
+            Date date = new Date();
+
+            Map<String, String> pdfValues = new HashMap<>();
+            pdfValues.put("sellerCompanyName", sellerCompany.getName());
+            pdfValues.put("sellerAddress", sellerCompany.getCompanyAddress().getFirstAddressLane());
+            pdfValues.put("sellerPostCodeCity", sellerCompany.getCompanyAddress().getSecondAddressLane());
+            pdfValues.put("sellerNip", sellerCompany.getOwner().getNip());
+            pdfValues.put("dateFrom", fullDate.format(dateFrom));
+            pdfValues.put("dateTo", fullDate.format(dateTo));
+            pdfValues.put("generationDate", fullDate.format(date));pdfValues.put("sellerAddress", sellerCompany.getCompanyAddress().getFirstAddressLane());
+
+
+
+            String productTemplate = "<tr>\n" +
+                    "                    <td>${lp}</td>\n" +
+                    "                    <td>${productName}</td>\n" +
+                    "                    <td>${productAmount}</td>\n" +
+                    "                    <td>${buyNetto}</td>\n" +
+                    "                    <td>${buyBrutto}</td>\n" +
+                    "                    <td>${sellNetto}</td>\n" +
+                    "                    <td>${sellBrutto}</td>\n" +
+                    "                    <td>${income}</td>" +
+                    "</tr>";
+
+            StringBuilder productListHtml= new StringBuilder();
+            tableItems.forEach(e -> System.out.println(e));
+
+            Double buyNettoSum = 0d;
+            Double buyBruttoSum = 0d;
+            Double sellNettoSum = 0d;
+            Double sellBruttoSum = 0d;
+            Double incomeSum = 0d;
+
+            int lp=1;
+            for(SaleReportTableItem p : tableItems){
+                Map<String, String> productValues = new HashMap<>();
+
+                buyNettoSum += p.getBuyNetto();
+                buyBruttoSum += p.getBuyBrutto();
+                sellNettoSum += p.getSellNetto();
+                sellBruttoSum += p.getSellBrutto();
+                incomeSum += p.getIncome();
+
+                productValues.put("lp",String.valueOf(lp++));
+                productValues.put("productName",p.getName());
+                productValues.put("productAmount",String.valueOf(p.getAmount()));
+                productValues.put("buyNetto",String.valueOf(p.getBuyNetto()));
+                productValues.put("buyBrutto",String.valueOf(p.getBuyBrutto()));
+                productValues.put("sellNetto",String.valueOf(p.getSellNetto()));
+                productValues.put("sellBrutto",String.valueOf(p.getSellBrutto()));
+                productValues.put("income", String.valueOf(p.getIncome()));
+                StringSubstitutor productSubstitutor = new StringSubstitutor(productValues);
+                productListHtml.append(productSubstitutor.replace(productTemplate));
+            }
+            pdfValues.put("tableBody",productListHtml.toString());
+
+
+            pdfValues.put("buyNettoSum",String.valueOf(Utils.trimDecimal(buyNettoSum)));
+            pdfValues.put("buyBruttoSum", String.valueOf(Utils.trimDecimal(buyBruttoSum)));
+            pdfValues.put("sellNettoSum", String.valueOf(Utils.trimDecimal(sellNettoSum)));
+            pdfValues.put("sellBruttoSum", String.valueOf(Utils.trimDecimal(sellBruttoSum)));
+            pdfValues.put("incomeSum", String.valueOf(Utils.trimDecimal(incomeSum)));
+
+            StringSubstitutor pdfSubstitutor = new StringSubstitutor(pdfValues);
+            String result = pdfSubstitutor.replace(htmlTemplate);
+
+            this.builder.insertHtml(result);
+
+
+            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/SaleReport-"+fullDate.format(date)+".pdf");
+
+
+
+
+        }catch (Exception exception) {
+            exception.printStackTrace();
+
+
+        }
+
+    }
+
+
+    public String generateVatPdf(Company sellerCompany, Company buyerCompany, List<CartItem> productList, String productsValue, String paymentMethod, String paymentDeadline , String saleDate, Date date){
+
+        try {
+
+            createDocumentBuilder();
+            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/Vat.html");
 
             this.configService.increaseInvoiceNumber();
-            Date date = new Date();
             SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
             SimpleDateFormat year = new SimpleDateFormat("yy");
 
@@ -70,15 +175,19 @@ public class PdfService {
             pdfValues.put("productsValue", productsValue);
 
             String productTemplate = "<tr>\n" +
-                    "            <th>${productName}</th>\n" +
-                    "            <th>${productAmount}</th>\n" +
-                    "            <th>${productPrice}</th>\n" +
-                    "            <th>${productSummaryPrice}(PLN)</th>\n" +
+                    "            <td>${lp}</td>\n" +
+                    "            <td>${productName}</td>\n" +
+                    "            <td>szt.</td>\n" +
+                    "            <td>${productAmount}</td>\n" +
+                    "            <td>${productPrice}</td>\n" +
+                    "            <td>${productSummaryPrice}</td>\n" +
                     "        </tr>";
 
             StringBuilder productListHtml= new StringBuilder();
+            int lp=1;
             for(CartItem p : productList){
                 Map<String, String> productValues = new HashMap<>();
+                productValues.put("lp",String.valueOf(lp++));
                 productValues.put("productName",p.getProduct().getName());
                 productValues.put("productAmount",p.getAmount().toString());
                 productValues.put("productPrice",String.valueOf(p.getProduct().getSellPrice()));
@@ -95,12 +204,15 @@ public class PdfService {
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("C:/MyFiles/ShopMenagerApplication/template/"+createFileName+".pdf");
-
+            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/"+createFileName+".pdf");
+            return invoiceNumber;
 
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return null;
+
+
     }
 
 

@@ -1,11 +1,12 @@
 package Structures.DataBase.Sales.Bill;
 
 import Structures.DataBase.Sales.BillToProductToPrice.BillToProductToPrice;
-import Structures.DataBase.Sales.CustomerComp.CustomerComp;
-import Structures.DataBase.Sales.CustomerPriv.CustomerPriv;
+//import Structures.DataBase.Sales.CustomerComp.CustomerComp;
+//import Structures.DataBase.Sales.CustomerPriv.CustomerPriv;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,56 +14,48 @@ import java.util.List;
 public class Bill {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE
-    )
     @Column(
-            name="bill_id"
+            name="bill_id",
+            updatable=false
     )
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
-    private LocalDate saleDate;
+    private Date saleDate;
 
-    @ManyToOne
-    @JoinColumn(
-            name="customer_priv_id",
-            insertable=false,
-            updatable=false)
-    private CustomerPriv customerPriv;
-
-
-    @ManyToOne
-    @JoinColumn(
-            name="customer_comp_id",
-            insertable=false,
-            updatable=false)
-    private CustomerComp customerComp;
+    @Column(
+            name="nip",
+            updatable = false
+    )
+    private String nip;
 
     @OneToMany(mappedBy = "billId")
     private List<BillToProductToPrice> salePrices;
 
-
-    public Bill(LocalDate saleDate, Long customerId) {
-        this.saleDate = saleDate;
-    }
-
     public Bill() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public LocalDate getSaleDate() {
+    public Date getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(LocalDate saleDate) {
+    public void setSaleDate(Date saleDate) {
         this.saleDate = saleDate;
+    }
+
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
     }
 }

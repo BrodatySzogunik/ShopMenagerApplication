@@ -59,8 +59,6 @@ public class ProductList {
         }
 
         tableModel = new ProductTableModel(tableValues);
-
-
         productListTable.setModel(tableModel);
         productListTable.getColumn("Koszyk").setCellRenderer(new JTableButtonRenderer());
         productListTable.addMouseListener(new JTableButtonMouseListener(productListTable));

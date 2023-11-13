@@ -1,9 +1,10 @@
 package services;
 
 import Structures.DataBase.Products.Category.Category;
-import Structures.DataBase.Products.Category.Category_;
 import Structures.DataBase.Products.OemToProduct.OemToProduct;
 import Structures.DataBase.Products.Product.Product;
+import Structures.DataBase.Sales.Bill.Bill;
+import Structures.DataBase.Sales.BillToProductToPrice.BillToProductToPrice;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -13,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import java.util.Date;
 import java.util.List;
 
 public class DBController {
@@ -108,25 +110,54 @@ public class DBController {
         return products;
     }
 
+    public void updateProductAmount(Product product, int newAmount){
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Product> criteriaUpdate =  cb.createCriteriaUpdate(Product.class);
 
-//    public static void main(String[] args) {
-//        Category category = new Category();
-//        category.setCategoryName("PŁYN HAMULCOWY");
-//        DBController dbController = new DBController();
-//
-////        dbController.insertIntoTable(category);
-//
-//        Product product = new Product();
-//
-//        product.setName("chłodnica honda accord");
-//        dbController.insertIntoTable(product);
-//
-//        System.out.println(dbController.getEntities(Product.class));
-//
-//        for (Product employee : dbController.getEntities(Product.class)) {
-//            System.out.println("ID: " + employee.getId() + ", Name: " + employee.getName());
-//        }
-//
-//
-//    }
+        Root<Product> root = criteriaUpdate.from(Product.class);
+
+        criteriaUpdate.set("quantity",newAmount);
+        criteriaUpdate.where(cb.equal(root.get("id"), product.getId()));
+
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        entityManager.close();
+    }
+
+    public List<Object[]> getSalesFromPeriod(Date fromDate, Date toDate){
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+
+        Root<Bill> billRoot = query.from(Bill.class);
+        Join<Bill, BillToProductToPrice> joinBillToProduct = billRoot.join("salePrices");
+        Join<BillToProductToPrice, Product> joinProduct = joinBillToProduct.join("productId");
+
+        // Subquery to calculate the sum of amounts
+
+
+        query.multiselect(
+                joinProduct.get("id"),
+                joinProduct.get("name"),
+                cb.sum(joinBillToProduct.get("amount")),
+                joinBillToProduct.get("salePrice"),
+                joinBillToProduct.get("buyPrice")
+                )
+                .groupBy(
+                        joinProduct.get("id"),
+                        joinProduct.get("name"),
+                        joinBillToProduct.get("salePrice"),
+                        joinBillToProduct.get("buyPrice")
+                )
+                .where(cb.between(billRoot.get("saleDate"),fromDate,toDate));
+
+        return entityManager.createQuery(query).getResultList();
+
+    }
 }

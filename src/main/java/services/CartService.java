@@ -3,6 +3,8 @@ package services;
 import Structures.Cart.CartItem;
 import Structures.DataBase.Products.Product.Product;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +14,8 @@ import java.util.stream.Stream;
 public class CartService {
     private static CartService instance;
     private List<CartItem>  productList;
+
+    private PropertyChangeSupport propertyChangeSupport=new PropertyChangeSupport(this);
 
 
 
@@ -48,22 +52,27 @@ public class CartService {
         }else {
             if(productInCart.isEmpty() && product.getQuantity() > 0){
                 this.productList.add(new CartItem(product,1 ));
+                this.propertyChangeSupport.firePropertyChange("sumOfItems",1,2);
             }
         }
     }
 
     public void removeProductFromCart(int index){
         this.productList.remove(index);
+        this.propertyChangeSupport.firePropertyChange("removeItem",1,2);
     }
     public void removeProductFromCart(CartItem cartItem){
         this.productList.remove(cartItem);
+        this.propertyChangeSupport.firePropertyChange("removeItem",1,2);
     }
 
     public void increaseProductAmount(int index){
         this.productList.get(index).increaseAmount();
+        this.propertyChangeSupport.firePropertyChange("sumOfItems",1,2);
     }
     public void decreaseProductAmount(int index){
         this.productList.get(index).decreaseAmount();
+        this.propertyChangeSupport.firePropertyChange("sumOfItems",2,1);
     }
 
     public Double getProductValue(){
@@ -72,6 +81,16 @@ public class CartService {
             productsValue += item.getProduct().getSellPrice() * item.getAmount();
         }
         return productsValue;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        System.out.println("property listener added");
+        propertyChangeSupport.addPropertyChangeListener(listener);
+        System.out.println(propertyChangeSupport.getPropertyChangeListeners()[0]);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
 }

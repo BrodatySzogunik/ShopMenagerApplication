@@ -10,7 +10,7 @@ import java.util.Vector;
 
 public class CartTableModel extends AbstractTableModel {
     private Vector<CartItem> cartItems;
-    private final String[] COLUMN_NAMES = new String[]{"id","Nazwa","Cena Sprzedarzy","Ilość","+","-"};
+    private final String[] COLUMN_NAMES = new String[]{"id","Nazwa","Cena Sprzedarzy","Ilość","+","-","x"};
     private final Class<?>[] COLUMN_TYPES = new Class<?>[] {Integer.class, String.class, Double.class, Integer.class,  JButton.class, JButton.class};
 
     public CartTableModel(Vector<CartItem> data){
@@ -61,6 +61,12 @@ public class CartTableModel extends AbstractTableModel {
                     this.fireTableDataChanged();
                 });
                 return button2;
+            case 6: final JButton button3 = new JButton(COLUMN_NAMES[columnIndex]);
+                button3.addActionListener(e ->{
+                    CartService.getInstance().removeProductFromCart(rowIndex);
+                    this.fireTableDataChanged();
+                });
+                return button3;
             default: return "Error";
         }
     }

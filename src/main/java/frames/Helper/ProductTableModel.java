@@ -30,8 +30,6 @@ public class ProductTableModel extends AbstractTableModel {
         this.fireTableRowsUpdated(0,products.size()-1);
     }
 
-
-
     @Override
     public String getColumnName(int columnIndex) {
         return COLUMN_NAMES[columnIndex];

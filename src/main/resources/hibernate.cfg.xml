@@ -27,8 +27,6 @@
         <mapping class="Structures.DataBase.Products.Property.Property"/>
         <mapping class="Structures.DataBase.Sales.Bill.Bill"/>
         <mapping class="Structures.DataBase.Sales.BillToProductToPrice.BillToProductToPrice"/>
-        <mapping class="Structures.DataBase.Sales.CustomerComp.CustomerComp"/>
-        <mapping class="Structures.DataBase.Sales.CustomerPriv.CustomerPriv"/>
 
     </session-factory>
 </hibernate-configuration>

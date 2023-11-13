@@ -38,6 +38,8 @@ public class MainApplication extends JFrame{
         //card layout
         CardLayout cardLayout = new CardLayout();
 
+
+
         //content panel
         this.contentPanel = new JPanel();
         contentPanel.setLayout(cardLayout);
@@ -47,6 +49,7 @@ public class MainApplication extends JFrame{
         contentPanel.add(cart.panel1, "cart");
         getContentPane().add(this.contentPanel, BorderLayout.CENTER);
 
+
         //panel steering
         this.navigationpanelClass.productSearch.addActionListener(e -> {
             System.out.println("show product search");
@@ -54,8 +57,8 @@ public class MainApplication extends JFrame{
         });
 
         this.navigationpanelClass.getDelivery.addActionListener(e->{
-            System.out.println("show single product");
-            cardLayout.show(contentPanel,"getDelivery");
+            System.out.println("ShowSaleReportGenerationFrame");
+            new generateSaleRaport();
         });
 
         this.cart.generateBillButton.addActionListener(e->{
@@ -74,7 +77,7 @@ public class MainApplication extends JFrame{
         getContentPane().add(this.navigationPanel, BorderLayout.NORTH);
 
 
-        this.setSize(500,500);
+        this.setSize(800,600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 

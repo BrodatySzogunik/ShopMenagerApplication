@@ -1,14 +1,15 @@
 package frames;
 
 import Structures.CEIDG.Company;
-import services.CEIDGService;
-import services.CartService;
-import services.ConfigService;
-import services.PdfService;
+import Structures.Cart.CartItem;
+import Structures.DataBase.Sales.Bill.Bill;
+import Structures.DataBase.Sales.BillToProductToPrice.BillToProductToPrice;
+import services.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Date;
 
 public class GenerateBill {
     private JTextField nipTextField;
@@ -29,6 +30,8 @@ public class GenerateBill {
     private CEIDGService ceidgService;
     private PdfService pdfService;
     private ConfigService configService;
+    private DBController dbController;
+
 
     private Company sellerCompanyInfo;
     private Company buyerCompanyInfo;
@@ -40,6 +43,7 @@ public class GenerateBill {
         this.pdfService = PdfService.getInstance();
         this.configService = ConfigService.getInstance();
         this.cartService = CartService.getInstance();
+        this.dbController = DBController.getInstance();
 
         this.panel1.setPreferredSize(new Dimension(200,200));
 
@@ -50,40 +54,11 @@ public class GenerateBill {
         }
 
         this.searchButton.addActionListener(e -> {
-            String nipTextValue = this.nipTextField.getText();
-            String regonTextValue = this.regonTextField.getText();
-
-            try{
-                Company companyInfo = null;
-                if(nipTextValue.length() == 10){
-                        companyInfo = this.ceidgService.getCompanyDataByNip(nipTextValue).companies.get(0);
-
-                }else if(regonTextValue.length() ==9 ){
-                        companyInfo = this.ceidgService.getCompanyDataByRegon(regonTextValue).companies.get(0);
-                }
-                if(companyInfo != null){
-                    companyNameLabel.setText(companyInfo.name);
-                    String companyAddress = companyInfo.companyAddress.street;
-                    companyAdresLabel.setText(companyAddress);
-                    CompanyNipLabel.setText(companyInfo.owner.nip);
-                    buyerCompanyInfo = companyInfo;
-                }
-
-
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-
-
-
+            this.searchCustomer();
         });
 
         this.generateVatButton.addActionListener(e -> {
-            String saleDate = this.dateField.getText();
-            String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
-            String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
-            String productsValue = String.valueOf(this.cartService.getProductValue());
-            this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo,this.cartService.getProductList() ,productsValue ,paymentMethod,paymentDeadline,saleDate);
+            this.generateVat();
         });
 
 
@@ -95,6 +70,69 @@ public class GenerateBill {
             instance = new GenerateBill();
         }
         return instance;
+    }
+
+    private void searchCustomer(){
+        String nipTextValue = this.nipTextField.getText();
+        String regonTextValue = this.regonTextField.getText();
+
+        try{
+            Company companyInfo = null;
+            if(nipTextValue.length() == 10){
+                companyInfo = this.ceidgService.getCompanyDataByNip(nipTextValue).companies.get(0);
+
+            }else if(regonTextValue.length() ==9 ){
+                companyInfo = this.ceidgService.getCompanyDataByRegon(regonTextValue).companies.get(0);
+            }
+            if(companyInfo != null){
+                companyNameLabel.setText(companyInfo.name);
+                String companyAddress = companyInfo.companyAddress.street;
+                companyAdresLabel.setText(companyAddress);
+                CompanyNipLabel.setText(companyInfo.owner.nip);
+                buyerCompanyInfo = companyInfo;
+            }
+
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private String generateVat(){
+        try{
+            String saleDate = this.dateField.getText();
+            String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
+            String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
+            String productsValue = String.valueOf(this.cartService.getProductValue());
+            Date creationDate= new Date();
+            String invoiceId = this.pdfService.generateVatPdf(sellerCompanyInfo, buyerCompanyInfo,this.cartService.getProductList() ,productsValue ,paymentMethod,paymentDeadline,saleDate,creationDate);
+
+            if(invoiceId != null){
+                Bill bill = new Bill();
+                bill.setId(invoiceId);
+                bill.setSaleDate(creationDate);
+                if(buyerCompanyInfo != null){
+                    bill.setNip(buyerCompanyInfo.getOwner().getNip());
+                }
+                this.dbController.insertIntoTable(bill);
+                for(CartItem cartItem : this.cartService.getProductList()){
+                    BillToProductToPrice billToProductToPrice = new BillToProductToPrice();
+                    billToProductToPrice.setSalePrice(cartItem.getProduct().getSellPrice());
+                    billToProductToPrice.setBuyPrice(cartItem.getProduct().getBuyPrice());
+                    billToProductToPrice.setAmount(cartItem.getAmount());
+                    billToProductToPrice.setBillId(bill);
+                    billToProductToPrice.setProductId(cartItem.getProduct());
+                    this.dbController.insertIntoTable(billToProductToPrice);
+                    this.dbController.updateProductAmount(cartItem.getProduct(), cartItem.getProduct().getQuantity()-cartItem.getAmount());
+                }
+            }
+
+            this.cartService.clearCart();
+            return invoiceId;
+        }catch (Exception error) {
+            error.printStackTrace();
+        }
+        return null;
     }
 
 }

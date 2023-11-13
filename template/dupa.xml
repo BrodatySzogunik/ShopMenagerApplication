@@ -1,0 +1,67 @@
+<DocumentElement>
+  <nag>
+    <sprzedawca_naz>Inter Cars SA</sprzedawca_naz>
+    <sprzedawca_nip>118-14-52-946</sprzedawca_nip>
+    <sprzedawca_adr>02-903 Warszawa, Powsińska 64</sprzedawca_adr>
+    <fir_adr>Częstochowa  - Równoległa 63c, 42-200 Częstochowa</fir_adr>
+    <subkonto>03109000046353000001691736</subkonto>
+    <nabywca_naz>AUTOCUBA RAFAŁ MORDALSKI</nabywca_naz>
+    <nabywca_nip>8321041981</nabywca_nip>
+    <nabywca_adr>98-355 Posmykowizna, Posmykowizna 34</nabywca_adr>
+    <kh_kod_pla>99O306</kh_kod_pla>
+    <odbiorca_naz>AUTOCUBA RAFAŁ MORDALSKI</odbiorca_naz>
+    <odbiorca_adr>98-355 Posmykowizna, Posmykowizna 34</odbiorca_adr>
+    <kh_kod_odb>99O306</kh_kod_odb>
+    <spo_pl_kod>02</spo_pl_kod>
+    <spo_pl_naz>Odroczona</spo_pl_naz>
+    <rod_d_kod>F</rod_d_kod>
+    <wal_kod>PLN</wal_kod>
+    <nr>81923</nr>
+    <numer>00081923/CZE/23/F</numer>
+    <dat_w>2023-10-16</dat_w>
+    <dat_pl>2023-10-30</dat_pl>
+    <dat_spr>2023-10-16</dat_spr>
+    <war_n>340.52</war_n>
+    <war_b>418.84</war_b>
+    <war_v>78.32</war_v>
+    <war_wal>0</war_wal>
+    <war_wn>418.84</war_wn>
+    <war_zapl>418.84</war_zapl>
+    <mag_fir_ko>CZE</mag_fir_ko>
+    <info>Dokument nie jest fakturą w rozumieniu prawa podatkowego</info>
+  </nag>
+  <poz>
+    <lp>1</lp>
+    <tow_kod>D044E4</tow_kod>
+    <indeks>KYB345702</indeks>
+    <kod_kre>4909500898468, 4909500898475, IC-D044E4</kod_kre>
+    <nazwa>Amortyzator</nazwa>
+    <opis>Amortyzator tył L/P pasuje do: NISSAN NV400; OPEL MOVANO B; RENAULT MASTER III 2.3D 02.10-</opis>
+    <ilosc>1</ilosc>
+    <cena>170.26</cena>
+    <cenadet>282.82</cenadet>
+    <vat>23</vat>
+    <sww></sww>
+    <grunaz></grunaz>
+    <nr_wz>00318473/CZE/2023/WZ</nr_wz>
+    <cn>87088035</cn>
+    <gtu>GTU_07</gtu>
+  </poz>
+  <poz>
+    <lp>1</lp>
+    <tow_kod>D044E4</tow_kod>
+    <indeks>KYB345702</indeks>
+    <kod_kre>4909500898468, 4909500898475, IC-D044E4</kod_kre>
+    <nazwa>Amortyzator</nazwa>
+    <opis>Amortyzator tył L/P pasuje do: NISSAN NV400; OPEL MOVANO B; RENAULT MASTER III 2.3D 02.10-</opis>
+    <ilosc>1</ilosc>
+    <cena>170.26</cena>
+    <cenadet>282.82</cenadet>
+    <vat>23</vat>
+    <sww></sww>
+    <grunaz></grunaz>
+    <nr_wz>00318473/CZE/2023/WZ</nr_wz>
+    <cn>87088035</cn>
+    <gtu>GTU_07</gtu>
+  </poz>
+</DocumentElement>

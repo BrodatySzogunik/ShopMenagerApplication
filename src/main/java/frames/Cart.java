@@ -1,9 +1,11 @@
 package frames;
 
 import Structures.Cart.CartItem;
+import Structures.DataBase.Products.Product.Product;
 import frames.Helper.CartTableModel;
 import frames.Helper.JTableButtonMouseListener;
 import frames.Helper.JTableButtonRenderer;
+import frames.Helper.ProductTableModel;
 import services.CartService;
 
 import javax.swing.*;
@@ -21,15 +23,21 @@ public class Cart {
     public JButton generateBillButton;
     private JLabel cartSumLabel;
 
-    private PropertyChangeSupport propertyChangeSupport;
-
-    Stream<Double> cartValueStream ;
     private final CartService cartService;
 
     private Cart(){
         this.cartService = CartService.getInstance();
-        this.cartValueStream = Stream.generate(() -> this.cartService.getProductValue());
-//        this.
+        this.cartSumLabel.setText(String.valueOf(0));
+
+        this.cartService.addPropertyChangeListener(evt -> {
+            this.cartSumLabel.setText(String.valueOf(this.cartService.getProductValue()));
+            if(evt.getPropertyName().equals("removeItem")){
+                this.updateCartTable();
+            }
+        });
+
+
+
         this.generateCartTable();
     }
 
@@ -39,13 +47,8 @@ public class Cart {
         }
         return instance;
     }
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.propertyChangeSupport.addPropertyChangeListener(listener);
-    }
 
-    private void updateSumOfItems(){
-        this.cartSumLabel.setText();
-    }
+
 
     private void generateCartTable(){
         Vector<CartItem> cartItems = new Vector<>(this.cartService.getProductList());
@@ -53,6 +56,7 @@ public class Cart {
         this.cartItemsTable.setModel(cartTableModel);
         cartItemsTable.getColumn("+").setCellRenderer(new JTableButtonRenderer());
         cartItemsTable.getColumn("-").setCellRenderer(new JTableButtonRenderer());
+        cartItemsTable.getColumn("x").setCellRenderer(new JTableButtonRenderer());
         cartItemsTable.addMouseListener(new JTableButtonMouseListener(cartItemsTable));
     }
 
@@ -60,5 +64,6 @@ public class Cart {
         Vector<CartItem> cartItems = new Vector<>(this.cartService.getProductList());
         CartTableModel cartTableModel = (CartTableModel)this.cartItemsTable.getModel();
         cartTableModel.updateData(cartItems);
+        cartItemsTable.setSize(cartItemsTable.getWidth(), cartItemsTable.getRowCount()* cartItemsTable.getRowHeight()+1);
     }
 }
