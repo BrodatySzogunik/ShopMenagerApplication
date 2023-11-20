@@ -64,7 +64,7 @@ public class ProductList {
         productListTable.addMouseListener(new JTableButtonMouseListener(productListTable));
     }
 
-    private void updateTable(){
+    public void updateTable(){
         CategoryComboBoxModel selectedCategoryModel = (CategoryComboBoxModel)categoryComboBox.getModel();
         Long selectedCategoryId = (Long)selectedCategoryModel.getElementIdAt(categoryComboBox.getSelectedIndex());
 
@@ -79,11 +79,8 @@ public class ProductList {
 
         Category category = new Category();
         category.setCategoryName("CHŁODZENIE");
-        category.setId(1L);
 
         dbController.insertIntoTable(category);
-
-
 
         Product product = new Product();
         product.setName("CHŁODNICA HONDA ACCORD V 1.9-2.2");
@@ -114,7 +111,6 @@ public class ProductList {
 
         Category categoryFilter = new Category();
         categoryFilter.setCategoryName("FILTR POWIETRZA");
-        categoryFilter.setId(2L);
 
         dbController.insertIntoTable(categoryFilter);
 

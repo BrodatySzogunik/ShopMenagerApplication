@@ -17,14 +17,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class IntercarsService {
     private static IntercarsService instance;
+    private ConfigService configService;
     private OkHttpClient client;
 
     private IntercarsService(){
+
         this.client = new OkHttpClient().newBuilder().build();
+        this.configService = ConfigService.getInstance();
     };
 
 
@@ -37,14 +41,17 @@ public class IntercarsService {
 
 
 
-    private List<nag> getInvoicesFromChosenPeriod (Date dateFrom, Date dateTo) throws IOException, JAXBException {
+    public List<nag> getInvoicesFromChosenPeriod (Date dateFrom, Date dateTo) throws IOException, JAXBException {
         SimpleDateFormat dateCompressed = new SimpleDateFormat("yyyyMMdd");
+
+        String khCode = this.configService.getInterCarsClientNumber();
+        String accessToken = this.configService.getInterCarsAccessToken();
 
         Request request = new Request.Builder()
                 .url("https://katalog.intercars.com.pl/api/v2/External/GetInvoices?from="+dateCompressed.format(dateFrom)+"&to="+dateCompressed.format(dateTo))
                 .method("GET",null)
-                .addHeader("kh_kod", "99O306")
-                .addHeader("token", "5b8f39fb-c408-4ce1-a20c-49978efa628a")
+                .addHeader("kh_kod", khCode)
+                .addHeader("token", accessToken)
                 .build();
 
         String response = this.client.newCall(request).execute().body().string();
@@ -56,18 +63,20 @@ public class IntercarsService {
         return invoicesListRoot.nag;
     }
 
-    private Invoice getInvoiceById (String id) throws IOException, JAXBException {
+    public Invoice getInvoiceById (String id) throws IOException, JAXBException {
         SimpleDateFormat dateCompressed = new SimpleDateFormat("yyyyMMdd");
+
+        String khCode = this.configService.getInterCarsClientNumber();
+        String accessToken = this.configService.getInterCarsAccessToken();
 
         Request request = new Request.Builder()
                 .url("https://katalog.intercars.com.pl/api/v2/External/GetInvoice?id="+id)
                 .method("GET",null)
-                .addHeader("kh_kod", "99O306")
-                .addHeader("token", "5b8f39fb-c408-4ce1-a20c-49978efa628a")
+                .addHeader("kh_kod", khCode)
+                .addHeader("token", accessToken)
                 .build();
 
         String response = this.client.newCall(request).execute().body().string();
-        System.out.println(response );
 
         var context = JAXBContext.newInstance(Invoice.class);
         var um = context.createUnmarshaller();
@@ -77,5 +86,10 @@ public class IntercarsService {
 
     public static void main(String[] args) throws IOException, JAXBException {
         System.out.println(IntercarsService.getInstance().getInvoiceById("243079506").poz.get(0).nazwa);
+//        System.out.println(IntercarsService.getInstance().getInvoiceById("243079506").poz.get(1).nazwa);
+
+//        for(nag n: IntercarsService.getInstance().getInvoicesFromChosenPeriod(new GregorianCalendar(2023,8,11).getTime(),new Date())){
+//            System.out.println(n.id);
+//        }
     }
 }

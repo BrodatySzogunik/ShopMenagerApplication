@@ -81,6 +81,27 @@ public class DBController {
         return null;
     }
 
+    public Product getProductById(String  productId){
+
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<Product> productRoot = query.from(Product.class);
+
+        query.select(productRoot);
+
+        if (productId != null) {
+            query.where(cb.equal(cb.lower(productRoot.get("id")), productId.toLowerCase()));
+        }
+
+        List<Product> products = entityManager.createQuery(query).getResultList();
+        if(products.size() == 1){
+            return products.get(0);
+        }else{
+            return null;
+        }
+    }
+
     public List<Product> searchProduct(String  searchTerm, Long categoryId){
 
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();

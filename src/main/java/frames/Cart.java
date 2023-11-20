@@ -35,9 +35,6 @@ public class Cart {
                 this.updateCartTable();
             }
         });
-
-
-
         this.generateCartTable();
     }
 

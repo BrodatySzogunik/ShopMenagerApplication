@@ -10,6 +10,9 @@ public class ConfigService {
     private String companyNip = "0";
     private Integer lastInvoiceNumber= 0;
     private String bankAccountNumber="0";
+    private String interCarsClientNumber = "";
+    private String interCarsAccessToken = "";
+
     private ConfigService(){};
 
     public static ConfigService getInstance(){
@@ -31,6 +34,8 @@ public class ConfigService {
             this.companyNip = properties.getProperty("companyNip");
             this.lastInvoiceNumber = Integer.parseInt(properties.getProperty("lastInvoiceNumber"));
             this.bankAccountNumber = properties.getProperty("bankAccountNumber");
+            this.interCarsAccessToken = properties.getProperty("interCarsAccessToken");
+            this.interCarsClientNumber = properties.getProperty("interCarsClientNumber");
 
         } catch (IOException e) {
             // If the file doesn't exist, create it
@@ -46,6 +51,8 @@ public class ConfigService {
         properties.setProperty("companyNip", this.companyNip);
         properties.setProperty("lastInvoiceNumber", Integer.toString(this.lastInvoiceNumber));
         properties.setProperty("bankAccountNumber", this.bankAccountNumber);
+        properties.setProperty("interCarsAccessToken", this.interCarsAccessToken);
+        properties.setProperty("interCarsClientNumber", this.interCarsClientNumber);
 
         try {
             // Save the configuration file (this will create it if it doesn't exist)
@@ -83,5 +90,21 @@ public class ConfigService {
 
     public void setBankAccountNumber(String bankAccountNumber) {
         this.bankAccountNumber = bankAccountNumber;
+    }
+
+    public String getInterCarsClientNumber() {
+        return interCarsClientNumber;
+    }
+
+    public void setInterCarsClientNumber(String interCarsClientNumber) {
+        this.interCarsClientNumber = interCarsClientNumber;
+    }
+
+    public String getInterCarsAccessToken() {
+        return interCarsAccessToken;
+    }
+
+    public void setInterCarsAccessToken(String interCarsAccessToken) {
+        this.interCarsAccessToken = interCarsAccessToken;
     }
 }

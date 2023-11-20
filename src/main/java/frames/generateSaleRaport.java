@@ -25,6 +25,11 @@ public class generateSaleRaport extends JFrame{
     public JPanel panel;
     private DBController dbController;
     private PdfService pdfService;
+    private JDatePanelImpl datePanel;
+    private JDatePickerImpl dateFromPicker;
+    private JDatePanelImpl datePanel2;
+    private JDatePickerImpl dateToPicker;
+
     generateSaleRaport(){
 
         this.dbController = DBController.getInstance();
@@ -35,7 +40,6 @@ public class generateSaleRaport extends JFrame{
         this.setResizable(false);
         this.setVisible(true);
 
-
         panel = new JPanel();
         panel.setLayout(null);
 
@@ -45,8 +49,8 @@ public class generateSaleRaport extends JFrame{
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl dateFromPicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePanel = new JDatePanelImpl(model, p);
+        dateFromPicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
         UtilDateModel model2 = new UtilDateModel();
         //model.setDate(20,04,2014);
@@ -54,8 +58,8 @@ public class generateSaleRaport extends JFrame{
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
-        JDatePickerImpl dateToPicker = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        datePanel2 = new JDatePanelImpl(model2, p2);
+        dateToPicker = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 
         JLabel informationLabel = new JLabel();
         informationLabel.setText("Wybierz zakres z którego chcesz wygenerować raport");
@@ -91,10 +95,7 @@ public class generateSaleRaport extends JFrame{
                 double income = sellBrutto - buyBrutto;
 
                 saleReportTableItemList.add(new SaleReportTableItem(name,amount, buyNetto,buyBrutto, sellNetto, sellBrutto,income));
-
             }
-
-
 
             this.pdfService.generateSaleReport(sellerCompanyInfo,dateFrom,dateTo,saleReportTableItemList);
 

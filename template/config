@@ -1,5 +1,7 @@
 #Configuration File
-#Sat Nov 11 12:09:36 CET 2023
+#Sun Nov 19 19:23:16 CET 2023
+interCarsAccessToken=5b8f39fb-c408-4ce1-a20c-49978efa628a
 companyNip=8321041981
+interCarsClientNumber=99O306
 bankAccountNumber=0
-lastInvoiceNumber=16
+lastInvoiceNumber=5

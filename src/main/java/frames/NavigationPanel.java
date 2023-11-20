@@ -16,7 +16,7 @@ public class NavigationPanel extends JFrame {
     private JLabel addressSecondLineLabel;
     public JButton productSearch;
     public JButton getDelivery;
-    public JButton searchCompany;
+    public JButton salesReport;
     public JButton cartButton;
 
     private ConfigService configService;

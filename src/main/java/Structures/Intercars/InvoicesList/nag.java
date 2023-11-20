@@ -29,4 +29,9 @@ public class nag {
     public String rod_d_kod_desc;
     public String edok;
     public int rok;
+
+    @Override
+    public String toString(){
+        return this.numer;
+    }
 }

@@ -17,8 +17,6 @@ public class CartService {
 
     private PropertyChangeSupport propertyChangeSupport=new PropertyChangeSupport(this);
 
-
-
     private CartService(){
         this.productList = new ArrayList<>();
     }
