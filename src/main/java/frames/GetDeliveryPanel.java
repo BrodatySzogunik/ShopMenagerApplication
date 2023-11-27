@@ -2,22 +2,22 @@ package frames;
 
 import javax.swing.*;
 
-public class GetDelivery {
+public class GetDeliveryPanel {
     public JPanel panel1;
     private JButton manualImprtButton;
     private JButton interCarsImprtButton;
-    private static GetDelivery instance = null ;
+    private static GetDeliveryPanel instance = null ;
 
-    private GetDelivery(){
+    private GetDeliveryPanel(){
         manualImprtButton.setEnabled(false);
         interCarsImprtButton.addActionListener(e -> {
-            new InterCarsImport();
+            new InterCarsImportPanel();
         });
     };
 
-    public static GetDelivery getInstance(){
+    public static GetDeliveryPanel getInstance(){
         if(instance == null){
-            instance = new GetDelivery();
+            instance = new GetDeliveryPanel();
         }
         return instance;
     }

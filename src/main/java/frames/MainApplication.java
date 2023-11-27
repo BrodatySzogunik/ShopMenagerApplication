@@ -11,22 +11,22 @@ public class MainApplication extends JFrame{
     private final JPanel navigationPanel;
     private final JPanel contentPanel;
 
-    private ProductList productList;
-    private GetDelivery getDelivery;
-    private GenerateBill generateBill;
+    private ProductListPanel productList;
+    private GetDeliveryPanel getDelivery;
+    private GenerateBillPanel generateBill;
 
     private ConfigService configService;
-    private Cart cart;
+    private CartPanel cart;
 
 
     public MainApplication(){
 
-        this.productList = ProductList.getInstance();
-        this.getDelivery = GetDelivery.getInstance();
-        this.generateBill = GenerateBill.getInstance();
+        this.productList = ProductListPanel.getInstance();
+        this.getDelivery = GetDeliveryPanel.getInstance();
+        this.generateBill = GenerateBillPanel.getInstance();
         this.navigationpanelClass = NavigationPanel.getInstance();
         this.configService = ConfigService.getInstance();
-        this.cart = Cart.getInstance();
+        this.cart = CartPanel.getInstance();
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -73,7 +73,7 @@ public class MainApplication extends JFrame{
 
         this.navigationpanelClass.salesReport.addActionListener(e->{
             System.out.println("generate sales report");
-            new generateSaleRaport();
+            new generateSaleRaportPanel();
         });
 
         //navigation panel
@@ -81,7 +81,7 @@ public class MainApplication extends JFrame{
         getContentPane().add(this.navigationPanel, BorderLayout.NORTH);
 
 
-        this.setSize(800,600);
+        this.setSize(1000,600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 

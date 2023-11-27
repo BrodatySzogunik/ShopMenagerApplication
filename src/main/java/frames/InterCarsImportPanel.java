@@ -1,10 +1,12 @@
 package frames;
 
+import Structures.DataBase.Products.Category.Category;
 import Structures.DataBase.Products.OemToProduct.OemToProduct;
 import Structures.DataBase.Products.Product.Product;
 import Structures.Intercars.Invoice.Invoice;
 import Structures.Intercars.Invoice.poz;
 import Structures.Intercars.InvoicesList.nag;
+import frames.Helper.CategoryComboBoxModel;
 import frames.Helper.ImportInvoiceTableModel;
 import frames.Helper.InvoiceComboBoxModel;
 import jakarta.xml.bind.JAXBException;
@@ -14,10 +16,13 @@ import org.jdatepicker.impl.UtilDateModel;
 import services.DBController;
 import services.IntercarsService;
 import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.*;
 
-public class InterCarsImport extends JFrame {
+public class InterCarsImportPanel extends JFrame {
 
     private JPanel panel;
     private IntercarsService intercarsService;
@@ -33,12 +38,12 @@ public class InterCarsImport extends JFrame {
     private JButton getInvoicesFromPeriodButton;
     private DBController dbController;
 
-     public InterCarsImport(){
+     public InterCarsImportPanel(){
 
-         this.intercarsService = IntercarsService.getInstance();
+         this.intercarsService = new IntercarsService();
          this.dbController = DBController.getInstance();
 
-         this.setSize(470,640);
+         this.setSize(870,640);
          this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
          this.setResizable(false);
          this.setVisible(true);
@@ -84,14 +89,14 @@ public class InterCarsImport extends JFrame {
          confirmInvoiceImportButton.setText("zatwierdź");
          confirmInvoiceImportButton.addActionListener(e -> this.confirmInvoiceImportActionListener());
 
-         informationLabel.setBounds(10,20,400,20);
-         dateFromPicker.setBounds(10,60,200,25);
-         dateToPicker.setBounds(240,60,200,25);
-         getInvoicesFromPeriodButton.setBounds(10,100,430,25);
-         invoiceComboBox.setBounds(10, 140 , 430,25);
-         importInvoiceButton.setBounds(10,180,430,25);
-         importInvoiceScrollPane.setBounds(10,220,430, 300);
-         confirmInvoiceImportButton.setBounds(10,535,430, 25);
+         informationLabel.setBounds(10,20,800,20);
+         dateFromPicker.setBounds(10,60,400,25);
+         dateToPicker.setBounds(440,60,400,25);
+         getInvoicesFromPeriodButton.setBounds(10,100,830,25);
+         invoiceComboBox.setBounds(10, 140 , 830,25);
+         importInvoiceButton.setBounds(10,180,830,25);
+         importInvoiceScrollPane.setBounds(10,220,830, 300);
+         confirmInvoiceImportButton.setBounds(10,535,830, 25);
 
          confirmInvoiceImportButton.setEnabled(false);
          importInvoiceButton.setEnabled(false);
@@ -145,7 +150,18 @@ public class InterCarsImport extends JFrame {
 
              Vector<poz> invoiceItems = new Vector<>(invoice.poz);
              ImportInvoiceTableModel importInvoiceTableModel = (ImportInvoiceTableModel) this.importInvoiceTable.getModel();
-             importInvoiceTableModel.updateData(invoiceItems);
+
+             List<Category> categoryList = this.dbController.getEntities(Category.class);
+
+             importInvoiceTableModel.updateData(invoiceItems,new Vector<>(categoryList));
+
+             TableColumn categoryColumn = importInvoiceTable.getColumnModel().getColumn(5);
+             JComboBox comboBox = new JComboBox();
+
+             comboBox.setModel(new CategoryComboBoxModel(categoryList));
+
+             categoryColumn.setCellEditor(new DefaultCellEditor(comboBox));
+
              importInvoiceTable.setSize(importInvoiceTable.getWidth(), importInvoiceTable.getRowCount()* importInvoiceTable.getRowHeight()+1);
 
              if(invoiceItems.size() > 0){
@@ -203,7 +219,39 @@ public class InterCarsImport extends JFrame {
         this.dispose();
 
      }
+}
 
+class ProductCategoryCellEditor extends DefaultCellEditor{
 
+    public ProductCategoryCellEditor(JComboBox<?> comboBox) {
+        super(comboBox);
+        editorComponent = comboBox;
+        comboBox.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        delegate = new EditorDelegate() {
+            public void setValue(Object value) {
+                comboBox.setSelectedItem(value);
+            }
 
+            public Object getCellEditorValue() {
+                return comboBox.getSelectedItem();
+            }
+
+            public boolean shouldSelectCell(EventObject anEvent) {
+                if (anEvent instanceof MouseEvent) {
+                    MouseEvent e = (MouseEvent)anEvent;
+                    return e.getID() != MouseEvent.MOUSE_DRAGGED;
+                }
+                return true;
+            }
+            public boolean stopCellEditing() {
+                if (comboBox.isEditable()) {
+                    // Commit edited value.
+                    comboBox.actionPerformed(new ActionEvent(
+                            ProductCategoryCellEditor.this, 0, ""));
+                }
+                return super.stopCellEditing();
+            }
+        };
+        comboBox.addActionListener(delegate);
+    }
 }

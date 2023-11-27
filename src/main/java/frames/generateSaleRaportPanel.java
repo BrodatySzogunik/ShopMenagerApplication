@@ -20,20 +20,22 @@ import services.ConfigService;
 import services.DBController;
 import services.PdfService;
 
-public class generateSaleRaport extends JFrame{
+public class generateSaleRaportPanel extends JFrame{
 
     public JPanel panel;
     private DBController dbController;
     private PdfService pdfService;
+    private CEIDGService ceidgService;
     private JDatePanelImpl datePanel;
     private JDatePickerImpl dateFromPicker;
     private JDatePanelImpl datePanel2;
     private JDatePickerImpl dateToPicker;
 
-    generateSaleRaport(){
+    generateSaleRaportPanel(){
 
         this.dbController = DBController.getInstance();
-        this.pdfService = PdfService.getInstance();
+        this.pdfService = new PdfService();
+        this.ceidgService = new CEIDGService();
 
         this.setSize(470,600);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -72,7 +74,7 @@ public class generateSaleRaport extends JFrame{
             Company sellerCompanyInfo = null;
 
             try {
-                sellerCompanyInfo = CEIDGService.getInstance().getCompanyDataByNip(ConfigService.getInstance().getCompanyNip()).companies.get(0);
+                sellerCompanyInfo = this.ceidgService.getCompanyDataByNip(ConfigService.getInstance().getCompanyNip()).companies.get(0);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }

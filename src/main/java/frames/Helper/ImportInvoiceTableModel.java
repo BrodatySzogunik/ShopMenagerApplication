@@ -1,6 +1,7 @@
 package frames.Helper;
 
 import Structures.Cart.CartItem;
+import Structures.DataBase.Products.Category.Category;
 import Structures.DataBase.Products.Product.Product;
 import Structures.Intercars.Invoice.Invoice;
 import Structures.Intercars.Invoice.poz;
@@ -11,15 +12,22 @@ import java.util.Vector;
 
 public class ImportInvoiceTableModel extends AbstractTableModel {
     private Vector<poz> itemList;
-    private final String[] COLUMN_NAMES = new String[]{"id","Nazwa","Cena Zakupu","Cena Sprzedarzy","Ilość"};
-    private final Class<?>[] COLUMN_TYPES = new Class<?>[] {String.class, String.class, Double.class, Double.class,  Integer.class};
+    private Vector<Category> categoryList;
+    private Vector<Category> availableCategories;
+    private final String[] COLUMN_NAMES = new String[]{"id","Nazwa","Cena Zakupu","Cena Sprzedarzy","Ilość","Kategoria"};
+    private final Class<?>[] COLUMN_TYPES = new Class<?>[] {String.class, String.class, Double.class, Double.class,  Integer.class, String.class};
 
     public  ImportInvoiceTableModel(Vector<poz> itemList){
         this.itemList = itemList;
     }
 
-    public void updateData(Vector<poz> itemList){
+    public void updateData(Vector<poz> itemList, Vector<Category> availableCategories){
         this.itemList = itemList;
+        this.categoryList = new Vector<>();
+        this.availableCategories = availableCategories;
+        for(poz ignored : this.itemList){
+            this.categoryList.add(new Category());
+        }
         this.fireTableRowsUpdated(0,itemList.size()-1);
     }
 
@@ -47,12 +55,14 @@ public class ImportInvoiceTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         poz selectedProduct = this.itemList.get(rowIndex);
+
         switch (columnIndex){
             case 0: return selectedProduct.tow_kod;
             case 1: return selectedProduct.nazwa;
             case 2: return selectedProduct.cena;
             case 3: return selectedProduct.cenadet;
             case 4: return selectedProduct.ilosc;
+            case 5: return categoryList.get(rowIndex).getId();
             default: return "Error";
         }
     }
@@ -62,9 +72,7 @@ public class ImportInvoiceTableModel extends AbstractTableModel {
         poz selectedProduct = this.itemList.get(rowIndex);
         switch (columnIndex){
             case 3: selectedProduct.cenadet = (double) aValue;
-        }
-        for(poz p: this.itemList){
-            System.out.println(p.cenadet);
+            case 5: categoryList.get(rowIndex).setId((Long) aValue);
         }
 
     }
@@ -73,13 +81,18 @@ public class ImportInvoiceTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex)
     {
         switch (columnIndex){
-            case 3: return true;
+            case 3:
+            case 5: return true;
             default: return false;
         }
     }
 
     public Vector<poz> getValues(){
         return this.itemList;
+    }
+
+    public Vector<Category> getCategories(){
+        return this.categoryList;
     }
 
 }

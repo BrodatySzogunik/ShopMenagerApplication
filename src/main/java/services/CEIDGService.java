@@ -11,22 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 public class CEIDGService {
-    private static CEIDGService instance;
     private OkHttpClient client;
 
-    private CEIDGService(){
+    public CEIDGService(){
         this.client = new OkHttpClient().newBuilder().build();
     };
-
-
-    public static CEIDGService getInstance(){
-        if(instance==null){
-            instance = new CEIDGService();
-        }
-        return instance;
-    }
-
-
 
     private Request generateCompanyDataRequest(String params){
         Request request = new Request.Builder()

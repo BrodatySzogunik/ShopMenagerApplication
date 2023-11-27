@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class CartService {
     private static CartService instance;
-    private List<CartItem>  productList;
+    private List<CartItem> productList;
 
     private PropertyChangeSupport propertyChangeSupport=new PropertyChangeSupport(this);
 
@@ -43,7 +43,9 @@ public class CartService {
                 .filter(cartItem -> Objects.equals(cartItem.getProduct().getId(), product.getId())).findFirst();
 
         Optional<CartItem> productAvailableInAmount = this.productList.stream()
-                .filter(cartItem -> productInCart.isPresent() && productInCart.get().getAmount()+1 <= product.getQuantity()).findFirst();
+                .filter(cartItem -> productInCart.isPresent() &&
+                        productInCart.get().getAmount()+1 <= product.getQuantity() &&
+                        cartItem.getProduct().getId() == productInCart.get().getProduct().getId()).findFirst();
 
         if(productAvailableInAmount.isPresent()){
             this.increaseProductAmount(this.productList.indexOf(productAvailableInAmount.get()));
@@ -59,6 +61,7 @@ public class CartService {
         this.productList.remove(index);
         this.propertyChangeSupport.firePropertyChange("removeItem",1,2);
     }
+
     public void removeProductFromCart(CartItem cartItem){
         this.productList.remove(cartItem);
         this.propertyChangeSupport.firePropertyChange("removeItem",1,2);
@@ -69,7 +72,10 @@ public class CartService {
         this.propertyChangeSupport.firePropertyChange("sumOfItems",1,2);
     }
     public void decreaseProductAmount(int index){
-        this.productList.get(index).decreaseAmount();
+        var cartItem = this.productList.get(index);
+        if(cartItem.getAmount()>1){
+            cartItem.decreaseAmount();
+        }
         this.propertyChangeSupport.firePropertyChange("sumOfItems",2,1);
     }
 

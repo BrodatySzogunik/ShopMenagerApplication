@@ -11,7 +11,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
 
-public class GenerateBill {
+public class GenerateBillPanel {
     private JTextField nipTextField;
     private JTextField regonTextField;
     private JButton searchButton;
@@ -20,13 +20,13 @@ public class GenerateBill {
     private JLabel CompanyNipLabel;
     public JPanel panel1;
     private JButton generateVatButton;
-    private JButton paragonButton;
-    private JButton nieVatButton;
+    private JButton generateBillButton;
+    private JButton generateNoVatButton;
     private JComboBox paymentMethodSelect;
     private JTextField dateField;
     private JTextField paymentDeadline;
 
-    private static GenerateBill instance;
+    private static GenerateBillPanel instance;
     private CEIDGService ceidgService;
     private PdfService pdfService;
     private ConfigService configService;
@@ -37,10 +37,10 @@ public class GenerateBill {
     private Company buyerCompanyInfo;
     private CartService cartService;
 
-    private GenerateBill(){
+    private GenerateBillPanel(){
 
-        this.ceidgService = CEIDGService.getInstance();
-        this.pdfService = PdfService.getInstance();
+        this.ceidgService = new CEIDGService();
+        this.pdfService = new PdfService();
         this.configService = ConfigService.getInstance();
         this.cartService = CartService.getInstance();
         this.dbController = DBController.getInstance();
@@ -61,13 +61,19 @@ public class GenerateBill {
             this.generateVat();
         });
 
+        this.generateNoVatButton.addActionListener(e -> {
+            this.generateNoVat();
+        });
 
+        this.generateBillButton.addActionListener(e -> {
+            this.generateBill();
+        });
 
     }
 
-    public static GenerateBill getInstance(){
+    public static GenerateBillPanel getInstance(){
         if(instance == null){
-            instance = new GenerateBill();
+            instance = new GenerateBillPanel();
         }
         return instance;
     }
@@ -97,6 +103,7 @@ public class GenerateBill {
             ioException.printStackTrace();
         }
     }
+
 
     private String generateVat(){
         try{
@@ -135,4 +142,76 @@ public class GenerateBill {
         return null;
     }
 
+    private String generateNoVat(){
+        try{
+            String saleDate = this.dateField.getText();
+            String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
+            String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
+            String productsValue = String.valueOf(this.cartService.getProductValue());
+            Date creationDate= new Date();
+            String invoiceId = this.pdfService.generateNoVatPdf(sellerCompanyInfo, buyerCompanyInfo,this.cartService.getProductList() ,productsValue ,paymentMethod,paymentDeadline,saleDate,creationDate);
+
+            if(invoiceId != null){
+                Bill bill = new Bill();
+                bill.setId(invoiceId);
+                bill.setSaleDate(creationDate);
+                if(buyerCompanyInfo != null){
+                    bill.setNip(buyerCompanyInfo.getOwner().getNip());
+                }
+                this.dbController.insertIntoTable(bill);
+                for(CartItem cartItem : this.cartService.getProductList()){
+                    BillToProductToPrice billToProductToPrice = new BillToProductToPrice();
+                    billToProductToPrice.setSalePrice(cartItem.getProduct().getSellPrice());
+                    billToProductToPrice.setBuyPrice(cartItem.getProduct().getBuyPrice());
+                    billToProductToPrice.setAmount(cartItem.getAmount());
+                    billToProductToPrice.setBillId(bill);
+                    billToProductToPrice.setProductId(cartItem.getProduct());
+                    this.dbController.insertIntoTable(billToProductToPrice);
+                    this.dbController.updateProductAmount(cartItem.getProduct(), cartItem.getProduct().getQuantity()-cartItem.getAmount());
+                }
+            }
+
+            this.cartService.clearCart();
+            return invoiceId;
+        }catch (Exception error) {
+            error.printStackTrace();
+        }
+        return null;
+    }
+
+    private String generateBill(){
+        try{
+            String saleDate = this.dateField.getText();
+            String paymentMethod = String.valueOf(this.paymentMethodSelect.getSelectedItem());
+            String paymentDeadline = String.valueOf(this.paymentDeadline.getText());
+            String productsValue = String.valueOf(this.cartService.getProductValue());
+            Date creationDate= new Date();
+            String invoiceId = this.pdfService.generateBillPdf(sellerCompanyInfo,this.cartService.getProductList() ,productsValue ,paymentMethod,paymentDeadline,saleDate,creationDate);
+
+            if(invoiceId != null){
+                Bill bill = new Bill();
+                bill.setId(invoiceId);
+                bill.setSaleDate(creationDate);
+                bill.setNip(null);
+
+                this.dbController.insertIntoTable(bill);
+                for(CartItem cartItem : this.cartService.getProductList()){
+                    BillToProductToPrice billToProductToPrice = new BillToProductToPrice();
+                    billToProductToPrice.setSalePrice(cartItem.getProduct().getSellPrice());
+                    billToProductToPrice.setBuyPrice(cartItem.getProduct().getBuyPrice());
+                    billToProductToPrice.setAmount(cartItem.getAmount());
+                    billToProductToPrice.setBillId(bill);
+                    billToProductToPrice.setProductId(cartItem.getProduct());
+                    this.dbController.insertIntoTable(billToProductToPrice);
+                    this.dbController.updateProductAmount(cartItem.getProduct(), cartItem.getProduct().getQuantity()-cartItem.getAmount());
+                }
+            }
+
+            this.cartService.clearCart();
+            return invoiceId;
+        }catch (Exception error) {
+            error.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -28,7 +28,7 @@ public class NavigationPanel extends JFrame {
         panel1.setPreferredSize(new Dimension(0,200));
 
         this.configService = ConfigService.getInstance();
-        this.ceidgService = CEIDGService.getInstance();
+        this.ceidgService = new CEIDGService();
         this.getInitialCompanyData();
 
     }

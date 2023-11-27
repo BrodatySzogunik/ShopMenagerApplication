@@ -1,23 +1,17 @@
 package frames;
 
 import Structures.Cart.CartItem;
-import Structures.DataBase.Products.Product.Product;
 import frames.Helper.CartTableModel;
 import frames.Helper.JTableButtonMouseListener;
 import frames.Helper.JTableButtonRenderer;
-import frames.Helper.ProductTableModel;
 import services.CartService;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Vector;
-import java.util.stream.Stream;
 
-public class Cart {
+public class CartPanel {
 
-    private static Cart instance;
+    private static CartPanel instance;
     private JTable cartItemsTable;
     public JPanel panel1;
     public JButton generateBillButton;
@@ -25,7 +19,7 @@ public class Cart {
 
     private final CartService cartService;
 
-    private Cart(){
+    private CartPanel(){
         this.cartService = CartService.getInstance();
         this.cartSumLabel.setText(String.valueOf(0));
 
@@ -38,9 +32,9 @@ public class Cart {
         this.generateCartTable();
     }
 
-    public static Cart getInstance(){
+    public static CartPanel getInstance(){
         if(instance == null){
-            instance = new Cart();
+            instance = new CartPanel();
         }
         return instance;
     }

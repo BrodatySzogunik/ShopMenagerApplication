@@ -14,7 +14,7 @@ import javax.swing.table.TableModel;
 import java.util.List;
 import java.util.Vector;
 
-public class ProductList {
+public class ProductListPanel {
     public JPanel panel1;
     private JTable productListTable;
     private JButton searchButton;
@@ -22,9 +22,9 @@ public class ProductList {
     private JComboBox categoryComboBox;
     private TableModel tableModel;
     private DBController dbController;
-    private static ProductList instance = null ;
+    private static ProductListPanel instance = null ;
 
-    private ProductList(){
+    private ProductListPanel(){
 
         dbController = DBController.getInstance();
 
@@ -34,7 +34,10 @@ public class ProductList {
 
 
         List<Category> categoryList = this.dbController.getEntities(Category.class);
-
+        Category nullCategory = new Category();
+        nullCategory.setCategoryName("");
+        nullCategory.setId(null);
+        categoryList.add(nullCategory);
 
         this.categoryComboBox.setModel(new CategoryComboBoxModel(categoryList));
 
@@ -44,9 +47,9 @@ public class ProductList {
 
     };
 
-    public static ProductList getInstance(){
+    public static ProductListPanel getInstance(){
         if(instance == null){
-            instance = new ProductList();
+            instance = new ProductListPanel();
         }
         return instance;
     }

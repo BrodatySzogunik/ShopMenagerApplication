@@ -8,6 +8,6 @@ public class Utils {
 
     public static double trimDecimal (double value){
         Integer result = Integer.valueOf((int) value *100);
-        return result/100;
+        return (double)result/100;
     }
 }

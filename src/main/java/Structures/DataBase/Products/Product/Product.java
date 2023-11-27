@@ -46,6 +46,15 @@ public class Product {
     public Product() {
     }
 
+    public Product(String id, int quantity, double buyPrice, double sellPrice, String name, String description) {
+        this.id = id;
+        this.quantity = quantity;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
+        this.name = name;
+        this.description = description;
+    }
+
     public String getId() {
         return id;
     }
