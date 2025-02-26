@@ -43,7 +43,7 @@ public class PdfService {
         try{
             createDocumentBuilder();
             pageSetup.setMargins(1);
-            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/SaleReport.html");
+            String htmlTemplate = this.readHTMLFileToString("./template/SaleReport.html");
 
             SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -116,7 +116,7 @@ public class PdfService {
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/SaleReport-"+fullDate.format(date)+".pdf");
+            this.builder.getDocument().save("./template/SaleReport-"+fullDate.format(date)+".pdf");
 
         }catch (Exception exception) {
             exception.printStackTrace();
@@ -129,7 +129,7 @@ public class PdfService {
         try {
 
             createDocumentBuilder();
-            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/Vat.html");
+            String htmlTemplate = this.readHTMLFileToString("./template/Vat.html");
 
             this.configService.increaseInvoiceNumber();
             SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
@@ -193,7 +193,7 @@ public class PdfService {
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/"+createFileName+".pdf");
+            this.builder.getDocument().save("./template/"+createFileName+".pdf");
             return invoiceNumber;
 
         } catch (Exception exception) {
@@ -207,7 +207,7 @@ public class PdfService {
         try {
 
             createDocumentBuilder();
-            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/NoVat.html");
+            String htmlTemplate = this.readHTMLFileToString("./template/NoVat.html");
 
             this.configService.increaseInvoiceNumber();
             SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
@@ -266,7 +266,7 @@ public class PdfService {
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/"+createFileName+".pdf");
+            this.builder.getDocument().save("./template/"+createFileName+".pdf");
             return invoiceNumber;
 
         } catch (Exception exception) {
@@ -279,7 +279,7 @@ public class PdfService {
         try {
 
             createDocumentBuilder();
-            String htmlTemplate = this.readHTMLFileToString("D:/inżynierka/ShopMenagerApplication/template/bill.html");
+            String htmlTemplate = this.readHTMLFileToString("./template/bill.html");
 
             this.configService.increaseInvoiceNumber();
             SimpleDateFormat fullDate = new SimpleDateFormat("dd-MM-yyyy");
@@ -334,7 +334,7 @@ public class PdfService {
             this.builder.insertHtml(result);
 
 
-            this.builder.getDocument().save("D:/inżynierka/ShopMenagerApplication/template/"+createFileName+".pdf");
+            this.builder.getDocument().save("./template/"+createFileName+".pdf");
             return invoiceNumber;
 
         } catch (Exception exception) {

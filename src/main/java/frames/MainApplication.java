@@ -76,6 +76,10 @@ public class MainApplication extends JFrame{
             new generateSaleRaportPanel();
         });
 
+        this.navigationpanelClass.settingsButton.addActionListener(e -> {
+            new ConfigPanel();
+        });
+
         //navigation panel
         this.navigationPanel = this.navigationpanelClass.panel1;
         getContentPane().add(this.navigationPanel, BorderLayout.NORTH);

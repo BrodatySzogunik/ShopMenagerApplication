@@ -18,6 +18,7 @@ public class NavigationPanel extends JFrame {
     public JButton getDelivery;
     public JButton salesReport;
     public JButton cartButton;
+    public JButton settingsButton;
 
     private ConfigService configService;
     private CEIDGService ceidgService;
